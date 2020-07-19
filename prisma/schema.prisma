@@ -1,17 +1,123 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-datasource db {
-  provider = "postgresql"
-  url      = "postgresql://postgres:toor#postgresql@localhost:5432/db_prisma2_gql"
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id Int @id @default(autoincrement())
-  name String
-  email String
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:@localhost:3306/db_test"
+}
+
+model atendentes {
+  created_at DateTime?
+  id         Int       @default(autoincrement()) @id
+  matricula  Int       @unique
+  nome       String
+  updated_at DateTime?
+}
+
+model atendentes_consultas {
+  atendente_id Int
+  consulta_id  Int
+  created_at   DateTime?
+  updated_at   DateTime?
+
+  @@id([atendente_id, consulta_id])
+  @@index([consulta_id], name: "fk_consulta")
+}
+
+model consultas {
+  created_at    DateTime?
+  data_consulta DateTime
+  horario       consultas_horario
+  id            Int               @default(autoincrement()) @id
+  medico_id     Int
+  paciente_id   Int
+  updated_at    DateTime?
+
+  @@index([medico_id], name: "fk_consulta_medico")
+  @@index([paciente_id], name: "fk_consultas_paciente")
+}
+
+model convenios {
+  created_at  DateTime?
+  id          Int       @default(autoincrement()) @id
+  matricula   String    @unique
+  paciente_id Int       @unique
+  plano_id    Int?      @unique
+  updated_at  DateTime?
+}
+
+model especialidades {
+  created_at DateTime?
+  id         Int       @default(autoincrement()) @id
+  nome       String
+  updated_at DateTime?
+}
+
+model medicos {
+  cpf        String    @unique
+  created_at DateTime?
+  crm        String    @unique
+  id         Int       @default(autoincrement()) @id
+  nome       String
+  updated_at DateTime?
+}
+
+model medicos_especialidades {
+  created_at       DateTime?
+  especialidade_id Int
+  medico_id        Int
+  updated_at       DateTime?
+
+  @@id([medico_id, especialidade_id])
+  @@index([especialidade_id], name: "fk_especialidade")
+}
+
+model pacientes {
+  cpf             String         @unique
+  created_at      DateTime?
+  data_nascimento DateTime
+  email           String         @unique
+  id              Int            @default(autoincrement()) @id
+  nome            String
+  sexo            pacientes_sexo
+  telefone_id     Int?
+  updated_at      DateTime?
+
+  @@index([telefone_id], name: "fk_paciente_telefone")
+}
+
+model planos {
+  convenio_id Int?
+  created_at  DateTime?
+  id          Int       @default(autoincrement()) @id
+  nome        String
+  updated_at  DateTime?
+
+  @@index([convenio_id], name: "fk_plano_convenio")
+}
+
+model telefones {
+  created_at  DateTime?
+  id          Int             @default(autoincrement()) @id
+  numero      String?
+  paciente_id Int             @unique
+  tipo        telefones_tipo?
+  updated_at  DateTime?
+}
+
+enum consultas_horario {
+  M
+  T
+}
+
+enum pacientes_sexo {
+  M
+  F
+}
+
+enum telefones_tipo {
+  CEL
+  EMP
+  RES
 }
