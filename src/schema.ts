@@ -1,17 +1,9 @@
 import { intArg, makeSchema, objectType, stringArg } from '@nexus/schema'
 import { nexusPrismaPlugin } from 'nexus-prisma'
-
-// const User = objectType({
-//   name: 'User',
-//   definition(t) {
-//     t.model.id()
-//     t.model.name()
-//     t.model.email()
-//   },
-// })
+import * as allTypes from './schemas'
 
 export const schema = makeSchema({
-  types: [  ], //User, Empoyees, etc... Models
+  types: allTypes, //User, Empoyees, etc... Models
   plugins: [nexusPrismaPlugin()],
   outputs: {
     schema: __dirname + '/../schema.graphql',
@@ -21,7 +13,7 @@ export const schema = makeSchema({
     contextType: 'Context.Context',
     sources: [
       {
-        source: '.prisma/client',
+        source: '@prisma/client',
         alias: 'prisma'
       },
       {
